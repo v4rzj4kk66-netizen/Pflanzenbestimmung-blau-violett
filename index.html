@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pflanzenbestimmung – Blau/Violette Blüten</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #dbeafe, #ede9fe);
+      color: #1e293b;
+    }
+
+    header {
+      background: linear-gradient(90deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    .container {
+      display: flex;
+      min-height: calc(100vh - 120px);
+    }
+
+    .main {
+      flex: 3;
+      padding: 25px;
+    }
+
+    .sidebar {
+      flex: 1;
+      background: #f8fafc;
+      border-left: 3px solid #cbd5e1;
+      padding: 20px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.08);
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .option {
+      background: #eef2ff;
+      border: 2px solid #c7d2fe;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .option:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(79,70,229,0.25);
+    }
+
+    .option img {
+      width: 100%;
+      height: 220px;
+      object-fit: contain;
+      background: white;
+    }
+
+    .option h3 {
+      margin: 10px;
+      color: #4338ca;
+    }
+
+    .option p {
+      margin: 10px;
+      font-size: 0.95rem;
+    }
+
+    .plant-card img {
+      width: 100%;
+      max-height: 700px;
+      object-fit: contain;
+      background: white;
+      border-radius: 14px;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+
+    .path-item {
+      background: #e0e7ff;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌸 Pflanzenbestimmung – Blau/Violette Blüten</h1>
+    <p>Interaktiver Bestimmungsschlüssel für den Biologieunterricht</p>
+  </header>
+
+  <div class="container">
+    <div class="main" id="app"></div>
+
+    <div class="sidebar">
+      <h2>🔎 Bestimmungsweg</h2>
+      <div id="path"></div>
+    </div>
+  </div>
+
+  <script>
+    const app = document.getElementById('app');
+    const pathDiv = document.getElementById('path');
+
+    let path = [];
+
+    function updatePath(step) {
+      path.push(step);
+      renderPath();
+    }
+
+    function renderPath() {
+      pathDiv.innerHTML = path.map(p => `<div class="path-item">${p}</div>`).join('');
+    }
+
+    function resetApp() {
+      path = [];
+      renderPath();
+      showFlowerType();
+    }
+
+    // Lege alle Bilder in einen Unterordner namens "bilder" neben dieser HTML-Datei.
+    // Beispiel: bilder/zaunwicke.jpg
+    // Eigene Bilder können beliebig ersetzt werden.
+
+    const plants = {
+      'Zaunwicke': {
+        family: 'Schmetterlingsblütler',
+        place: 'Zäune, Wegränder, Wiesen',
+        bloom: 'Mai – August',
+        image: 'bilder/zaunwicke.jpg'
+      },
+      'Vogel-Wicke': {
+        family: 'Schmetterlingsblütler',
+        place: 'Wiesen und Waldränder',
+        bloom: 'Mai – September',
+        image: 'bilder/vogelwicke.jpg'
+      },
+      'Bunte Kronwicke': {
+        family: 'Schmetterlingsblütler',
+        place: 'Trockene Wiesen',
+        bloom: 'Mai – September',
+        image: 'bilder/bunte_kronwicke.jpg'
+      },
+      'Staudenlupine': {
+        family: 'Schmetterlingsblütler',
+        place: 'Gärten, Böschungen',
+        bloom: 'Juni – August',
+        image: 'bilder/staudenlupine.jpg'
+      },
+      'Gamander-Ehrenpreis': {
+        family: 'Wegerichgewächse',
+        place: 'Wiesen und Waldränder',
+        bloom: 'April – Juli',
+        image: 'bilder/gamander_ehrenpreis.jpg'
+      },
+      'Duftveilchen': {
+        family: 'Veilchengewächse',
+        place: 'Laubwälder',
+        bloom: 'März – April',
+        image: 'bilder/duftveilchen.jpg'
+      },
+      'Gemeine Ochsenzunge': {
+        family: 'Raublattgewächse',
+        place: 'Wegränder',
+        bloom: 'Mai – September',
+        image: 'bilder/ochsenzunge.jpg'
+      },
+      'Wald-Vergissmeinnicht': {
+        family: 'Raublattgewächse',
+        place: 'Wälder',
+        bloom: 'April – Juni',
+        image: 'bilder/wald_vergissmeinnicht.jpg'
+      },
+      'Futter-Beinwell': {
+        family: 'Raublattgewächse',
+        place: 'Feuchte Wiesen',
+        bloom: 'Mai – Juli',
+        image: 'bilder/futter_beinwell.jpg'
+      },
+      'Gewöhnlicher Natternkopf': {
+        family: 'Raublattgewächse',
+        place: 'Trockenrasen',
+        bloom: 'Juni – September',
+        image: 'bilder/natternkopf.jpg'
+      },
+      'Rundblättrige Glockenblume': {
+        family: 'Glockenblumengewächse',
+        place: 'Magerwiesen',
+        bloom: 'Juni – September',
+        image: 'bilder/rundblaettrige_glockenblume.jpg'
+      },
+      'Rapunzel-Glockenblume': {
+        family: 'Glockenblumengewächse',
+        place: 'Wiesen',
+        bloom: 'Juni – August',
+        image: 'bilder/rapunzel_glockenblume.jpg'
+      },
+      'Pfirsichblättrige Glockenblume': {
+        family: 'Glockenblumengewächse',
+        place: 'Waldränder',
+        bloom: 'Juni – August',
+        image: 'bilder/pfirsichblaettrige_glockenblume.jpg'
+      },
+      'Nesselblättrige Glockenblume': {
+        family: 'Glockenblumengewächse',
+        place: 'Feuchte Wälder',
+        bloom: 'Juni – September',
+        image: 'bilder/nesselblaettrige_glockenblume.jpg'
+      },
+      'Ruprechtskraut': {
+        family: 'Storchschnabelgewächse',
+        place: 'Wälder und Mauern',
+        bloom: 'Mai – Oktober',
+        image: 'bilder/ruprechtskraut.jpg'
+      },
+      'Purpur-Storchschnabel': {
+        family: 'Storchschnabelgewächse',
+        place: 'Wiesen',
+        bloom: 'Mai – Juli',
+        image: 'bilder/purpur_storchschnabel.jpg'
+      },
+      'Wald-Storchschnabel': {
+        family: 'Storchschnabelgewächse',
+        place: 'Wälder',
+        bloom: 'Juni – August',
+        image: 'bilder/wald_storchschnabel.jpg'
+      },
+      'Pyrenäen-Storchschnabel': {
+        family: 'Storchschnabelgewächse',
+        place: 'Gärten und Wiesen',
+        bloom: 'Mai – September',
+        image: 'bilder/pyrenaeen_storchschnabel.jpg'
+      },
+      'Wiesen-Storchschnabel': {
+        family: 'Storchschnabelgewächse',
+        place: 'Feuchtwiesen',
+        bloom: 'Juni – August',
+        image: 'bilder/wiesen_storchschnabel.jpg'
+      },
+      'Kornblume': {
+        family: 'Korbblütler',
+        place: 'Äcker und Felder',
+        bloom: 'Juni – September',
+        image: 'bilder/kornblume.jpg'
+      },
+      'Kriechender Günsel': {
+        family: 'Lippenblütler',
+        place: 'Wiesen',
+        bloom: 'April – Juni',
+        image: 'bilder/kriechender_guensel.jpg'
+      },
+      'Kleine Braunelle': {
+        family: 'Lippenblütler',
+        place: 'Wiesen',
+        bloom: 'Juni – September',
+        image: 'bilder/kleine_braunelle.jpg'
+      },
+      'Wiesensalbei': {
+        family: 'Lippenblütler',
+        place: 'Trockenwiesen',
+        bloom: 'Mai – Juli',
+        image: 'bilder/wiesensalbei.jpg'
+      },
+      'Acker-Witwenblume': {
+        family: 'Geißblattgewächse',
+        place: 'Wiesen',
+        bloom: 'Juni – September',
+        image: 'bilder/acker_witwenblume.jpg'
+      },
+      'Bastard-Luzerne': {
+        family: 'Schmetterlingsblütler',
+        place: 'Wiesen und Felder',
+        bloom: 'Mai – September',
+        image: 'bilder/bastard_luzerne.jpg'
+      },
+      'Schwarze Teufelskralle': {
+        family: 'Wegerichgewächse',
+        place: 'Feuchtwiesen',
+        bloom: 'Juni – August',
+        image: 'bilder/schwarze_teufelskralle.jpg'
+      }
+    };
+
+    function plantCard(name) {
+      const plant = plants[name];
+      updatePath(name);
+
+      app.innerHTML = `
+        <div class="card plant-card">
+          <h2>🌿 ${name}</h2>
+          <img src="${plant.image}" alt="${name}">
+          <p><strong>Familie:</strong> ${plant.family}</p>
+          <p><strong>Fundort:</strong> ${plant.place}</p>
+          <p><strong>Blütezeit:</strong> ${plant.bloom}</p>
+          <button onclick="resetApp()">Neue Bestimmung starten</button>
+        </div>
+      `;
+    }
+
+    function showFlowerType() {
+      app.innerHTML = `
+        <div class="card">
+          <h2>1. Welche Blütenform hat die Pflanze?</h2>
+          <div class="options">
+            <div class="option" onclick="showSingleFlower()">
+              <img src="bilder/einzelbluete.jpg">
+              <h3>Einzelblüte</h3>
+              <p>Einzelne gut erkennbare Blüte</p>
+            </div>
+
+            <div class="option" onclick="showLipFlower()">
+              <img src="bilder/lippenbluete.jpg">
+              <h3>Lippenblüte</h3>
+              <p>Blüte mit Ober- und Unterlippe</p>
+            </div>
+
+            <div class="option" onclick="showCompositeFlower()">
+              <img src="bilder/zusammengesetzte_bluete.jpg">
+              <h3>Zusammengesetzte Blüte</h3>
+              <p>Viele kleine Blüten bilden gemeinsam einen Blütenstand</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showSingleFlower() {
+      updatePath('Einzelblüte');
+
+      app.innerHTML = `
+        <div class="card">
+          <h2>2. Wie viele Kronblätter besitzt die Blüte?</h2>
+
+          <div class="options">
+            <div class="option" onclick="showPlantSelection(['Gamander-Ehrenpreis'], 'Vier symmetrische Kronblätter')">
+              <img src="bilder/vier_symmetrisch.jpg">
+              <h3>Vier symmetrische Kronblätter</h3>
+            </div>
+
+            <div class="option" onclick="showPlantSelection(['Zaunwicke','Vogel-Wicke','Bunte Kronwicke','Staudenlupine'], 'Vier unsymmetrische Kronblätter')">
+              <img src="bilder/vier_unsymmetrisch.jpg">
+              <h3>Vier unsymmetrische Kronblätter</h3>
+            </div>
+
+            <div class="option" onclick="showPlantSelection(['Duftveilchen','Gemeine Ochsenzunge','Wald-Vergissmeinnicht','Futter-Beinwell','Gewöhnlicher Natternkopf','Rundblättrige Glockenblume','Rapunzel-Glockenblume','Pfirsichblättrige Glockenblume','Nesselblättrige Glockenblume','Ruprechtskraut','Purpur-Storchschnabel','Wald-Storchschnabel','Pyrenäen-Storchschnabel','Wiesen-Storchschnabel'], 'Fünf Kronblätter')">
+              <img src="bilder/fuenf_kronblaetter.jpg">
+              <h3>Fünf Kronblätter</h3>
+            </div>
+
+            <div class="option" onclick="showPlantSelection(['Kornblume'], 'Viele Kronblätter')">
+              <img src="bilder/viele_kronblaetter.jpg">
+              <h3>Viele Kronblätter</h3>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showLipFlower() {
+      updatePath('Lippenblüte');
+      showPlantSelection(['Kriechender Günsel','Kleine Braunelle','Wiesensalbei'], 'Lippenblüten');
+    }
+
+    function showCompositeFlower() {
+      updatePath('Zusammengesetzte Blüte');
+
+      app.innerHTML = `
+        <div class="card">
+          <h2>2. Welche Form hat der Blütenstand?</h2>
+
+          <div class="options">
+            <div class="option" onclick="showPlantSelection(['Acker-Witwenblume','Bastard-Luzerne'], 'Blüten mit Köpfchen')">
+              <img src="bilder/koepfchen_blueten.jpg">
+              <h3>Blüten mit Köpfchen</h3>
+            </div>
+
+            <div class="option" onclick="showPlantSelection(['Schwarze Teufelskralle'], 'Ähren / Scheinähren')">
+              <img src="bilder/ehren_scheinaehren.jpg">
+              <h3>Ähren / Scheinähren</h3>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showPlantSelection(list, category) {
+      updatePath(category);
+
+      app.innerHTML = `
+        <div class="card">
+          <h2>3. Wähle die passende Pflanzenart</h2>
+          <div class="options">
+            ${list.map(name => `
+              <div class="option" onclick="plantCard('${name}')">
+                <img src="${plants[name].image}" alt="${name}">
+                <h3>${name}</h3>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    showFlowerType();
+  </script>
+</body>
+</html>
