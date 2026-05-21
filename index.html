@@ -354,11 +354,14 @@ function showPlantSelection(plantNames) {
   let html = `
     <div class="question">
       <h2>3. Wähle die passende Pflanze aus</h2>
+      <p style="margin-bottom:20px; color:#5a4bb5; font-weight:bold;">
+        Klicke auf Bild oder Namen für weitere Informationen.
+      </p>
       <div class="options">
   `;
 
   plantNames.forEach(name => {
-    html += createOption(name, plants[name].bild')`);
+    html += createOption(name, plants[name].bild, '', `showPlantCard('${name}')`);
   });
 
   html += '</div></div>';
@@ -393,6 +396,10 @@ function showPlantCard(name) {
 
 showMainQuestion();
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
